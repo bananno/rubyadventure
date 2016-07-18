@@ -1,55 +1,11 @@
 class PlayGame
     def initialize
-        puts "\nWelcome!"
+        require "colorize"
         create_map
-        play_game
-    end
 
-    def play_game
-        # while true
-        separate
-
+        clear_screen
         print_map
-
         get_action
-
-        if @action == "quit"
-            # break
-        elsif @action == "help"
-            give_help
-        elsif @action == "jump"
-            @you_are_here += 1
-
-            if @you_are_here >= @the_map.length
-                @you_are_here = 0
-            end
-        else
-            puts "Action not found."
-        end
-
-        # break
-        # end
-
-        separate
-        puts "Goodbye.\n\n"
-    end
-
-    def get_action
-        puts "\nWhat to do next?"
-        @action = gets.chomp
-        puts "action = " + @action
-        do_action
-    end
-
-    def do_action
-    end
-
-    def give_help
-        puts ["\nActions:","help","jump","quit"].join("\n  - ")
-    end
-
-    def separate
-        puts "\n========================\n\n"
     end
 
     def create_map
@@ -57,8 +13,27 @@ class PlayGame
         @you_are_here = 5
     end
 
+    ####################
+
+    def clear_screen
+        system "clear"
+    end
+
+    def print_and_flush(str)
+        print str
+        $stdout.flush
+    end
+
+    ####################
+
+    def get_action
+        print_and_flush "\nWhat to do next? ".green
+        @action = gets.chomp
+        do_action
+    end
+
     def print_map
-        tester = []
+        grid = []
 
         @the_map.length.times do |i|
 
@@ -70,10 +45,47 @@ class PlayGame
                 tile = "?"
             end
 
-            tester.push(tile)
+            grid.push(tile)
         end
 
-        puts "Map:\n -------------------- \n|" + tester.join("") + "|\n -------------------- "
+        puts "Map: ---------------- \n|".blue +
+            grid.join("") +
+            "|\n -------------------- ".blue
+    end
+
+    def do_action
+        if @action == "quit"
+            clear_screen
+            print_map
+            puts "\nGoodbye.\n".yellow
+        elsif @action == "help"
+            clear_screen
+            print_map
+            give_help
+            get_action
+        elsif @action == "jump"
+            clear_screen
+            print_map
+            puts "\nJump!".yellow
+
+            @you_are_here += 1
+
+            if @you_are_here >= @the_map.length
+                @you_are_here = 0
+            end
+
+            get_action
+        else
+            clear_screen
+            print_map
+            puts "\nAction '#{@action}' not found.".red
+            give_help
+            get_action
+        end
+    end
+
+    def give_help
+        puts ["\nActions:","help","jump","quit"].join("\n  - ").yellow
     end
 end
 
