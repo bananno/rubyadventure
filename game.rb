@@ -14,17 +14,36 @@ class PlayGame
         @snow = 2
 
         @the_map = [
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-            [0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,2,2],
-            [0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,2,2,2],
-            [0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,2],
-            [0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,2,2,2],
-            [0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,2,2,2],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2]
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,2],
+            [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,2,2,2],
+            [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,2,2],
+            [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,2,2,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,2,2,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2]
         ]
 
         @you_are_here_row = 0
         @you_are_here_col = 5
+
+        @the_map.length.times do |i|
+            @the_map[i].length.times do |j|
+
+                number = @the_map[i][j]
+
+                if number == 0
+                    terrain = "░".green
+                elsif number == 1
+                    terrain = "░".blue
+                elsif number == 2
+                    terrain = "░".white
+                else
+                    terrain = "?"
+                end
+
+                @the_map[i][j] = terrain
+            end
+        end
     end
 
     ####################
@@ -47,11 +66,14 @@ class PlayGame
     end
 
     def print_map
-        grid = []
 
-        paint = ""
+        paint = "╔".blue
 
-        paint += "╔══════════════════════╗\n".blue
+        (@the_map[0].length + 2).times do |i|
+            paint += "═".blue
+        end
+
+        paint += "╗\n".blue
 
         @the_map.length.times do |i|
 
@@ -59,18 +81,10 @@ class PlayGame
 
             @the_map[i].length.times do |j|
 
-                terrain = @the_map[i][j]
-
                 if @you_are_here_row == i && @you_are_here_col == j
                     tile = "☓".red
-                elsif terrain == @grass
-                    tile = "░".green
-                elsif terrain == @water
-                    tile = "░".blue
-                elsif terrain == @snow
-                    tile = "░".white
                 else
-                    tile = "?"
+                    tile = @the_map[i][j]
                 end
 
                 paint += tile
@@ -79,7 +93,13 @@ class PlayGame
             paint += " ║\n".blue
         end
 
-        paint += "╚══════════════════════╝".blue
+        paint += "╚".blue
+
+        (@the_map[0].length + 2).times do |i|
+            paint += "═".blue
+        end
+
+        paint += "╝".blue
 
         puts paint
     end
@@ -121,7 +141,7 @@ class PlayGame
     end
 end
 
-this_game = PlayGame.new
+PlayGame.new
 
 # MVS's project = https://github.com/smellsblue/holmes
 
