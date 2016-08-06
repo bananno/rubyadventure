@@ -9,8 +9,22 @@ class PlayGame
     end
 
     def create_map
-        @the_map = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        @you_are_here = 5
+        @grass = 0
+        @water = 1
+        @snow = 2
+
+        @the_map = [
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+            [0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,2,2],
+            [0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,2,2,2],
+            [0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,2,2],
+            [0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,2,2,2],
+            [0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,2,2,2],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2]
+        ]
+
+        @you_are_here_row = 0
+        @you_are_here_col = 5
     end
 
     ####################
@@ -35,22 +49,39 @@ class PlayGame
     def print_map
         grid = []
 
+        paint = ""
+
+        paint += "╔══════════════════════╗\n".blue
+
         @the_map.length.times do |i|
 
-            if @you_are_here == i
-                tile = "X"
-            elsif @the_map[i] == 0
-                tile = " "
-            else
-                tile = "?"
+            paint += "║ ".blue
+
+            @the_map[i].length.times do |j|
+
+                terrain = @the_map[i][j]
+
+                if @you_are_here_row == i && @you_are_here_col == j
+                    tile = "☓".red
+                elsif terrain == @grass
+                    tile = "░".green
+                elsif terrain == @water
+                    tile = "░".blue
+                elsif terrain == @snow
+                    tile = "░".white
+                else
+                    tile = "?"
+                end
+
+                paint += tile
             end
 
-            grid.push(tile)
+            paint += " ║\n".blue
         end
 
-        puts "Map: ---------------- \n|".blue +
-            grid.join("") +
-            "|\n -------------------- ".blue
+        paint += "╚══════════════════════╝".blue
+
+        puts paint
     end
 
     def do_action
@@ -65,14 +96,15 @@ class PlayGame
             get_action
         elsif @action == "jump"
             clear_screen
+
+            @you_are_here_col += 1
+
+            if @you_are_here_col >= @the_map[0].length
+                @you_are_here_col = 0
+            end
+
             print_map
             puts "\nJump!".yellow
-
-            @you_are_here += 1
-
-            if @you_are_here >= @the_map.length
-                @you_are_here = 0
-            end
 
             get_action
         else
